@@ -1,30 +1,48 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { NavController } from '@ionic/angular';
+import { PictureService } from '../picture.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage {
+export class HomePage implements OnInit {
+  imagenParaMostrar: any;
 
-  constructor() {}
+  constructor(
+    private navCtrl: NavController,
+    private pictureService: PictureService
+  ) {}
 
   ngOnInit(): void {
     Camera.requestPermissions();
+    this.getLastImage();
   }
 
-  imagenParaMostrar: string = "";
-  imagenTomada: any;  
-
   async getPicture() {
-    this.imagenTomada = await Camera.getPhoto({
+    const imagenTomada = await Camera.getPhoto({
       quality: 90,
       resultType: CameraResultType.Uri,
       source: CameraSource.Camera
     });
-    if (this.imagenTomada) {
-      this.imagenParaMostrar = this.imagenTomada;
+    if (imagenTomada) {
+      this.pictureService.guardarImagen(imagenTomada);
+      this.imagenParaMostrar = imagenTomada.webPath;
+      // Guardar en el almacenamiento local
+      localStorage.setItem('lastImage', this.imagenParaMostrar);
     }
-  }  
+  }
+
+  getLastImage() {
+    const lastImage = localStorage.getItem('lastImage');
+    if (lastImage) {
+      this.imagenParaMostrar = lastImage;
+    }
+  }
+
+  goToGallery() {
+    this.navCtrl.navigateForward('/galeria');
+  }
 }

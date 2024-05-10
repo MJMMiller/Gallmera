@@ -1,16 +1,20 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      CAPTURA DE IMAGEN
+      CAMARA
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div>
+
+    <img [src]="imagenParaMostrar" (click)="goToGallery()" *ngIf="imagenParaMostrar">
+
     <ion-button fill="outline"  color="dark" (click)="getPicture()">
       <ion-icon name="ellipse-sharp"></ion-icon>
     </ion-button>
   </div>
 </ion-content>
+
 
